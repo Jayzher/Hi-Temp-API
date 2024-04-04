@@ -4,12 +4,12 @@ const tasksController = require("../controllers/tasksController.js");
 const auth = require("../auth.js");
 
 router.post("/addTask", (req, res) => {
-	const data = {
-        isAdmin: auth.decode(req.headers.authorization).isAdmin,
+    const data = {
+        role: auth.decode(req.headers.authorization).role,
         id : auth.decode(req.headers.authorization).id
     }
 
-    if (data.isAdmin) {
+    if(data.role === "Admin") {
     	tasksController.createTask(req.body).then(resultFromController => res.send(resultFromController));
     } else {
 		res.send(false);
@@ -20,19 +20,24 @@ router.get("/allTasks", (req, res) => {
 	tasksController.getAll().then(resultFromController => res.send(resultFromController));
 })
 
-router.get("/active", (req, res) => {
-	tasksController.availableProducts().then(resultFromController => res.send(resultFromController));
+router.post("/active", (req, res) => {
+	tasksController.availableProducts(req.body).then(resultFromController => res.send(resultFromController));
 })
+
+router.post("/TaskDetails", (req, res) => {
+    tasksController.getTaskById(req.body).then(resultFromController => res.send(resultFromController));
+})
+
 
 router.put("/update", auth.verify, (req, res) => {
     const data = {
-        isAdmin: auth.decode(req.headers.authorization).isAdmin,
+        role: auth.decode(req.headers.authorization).role
     }
 
-    if(data.isAdmin) {
+    if(data.role === "Admin") {
         tasksController.updateTask(req.body).then(resultFromController => res.send(resultFromController));
     } else {
-        res.send(false);
+        res.send("Not an Admin!");
     }
 })
 
@@ -65,6 +70,18 @@ router.post("/assign", (req, res) => {
             res.status(500).send("An error occurred");
         });
 });
+
+router.put("/setActive", (req, res) => {
+    tasksController.setTaskActive(req.body).then(resultFromController => res.send(resultFromController));
+})
+
+router.put("/addtasktypes", (req, res) => {
+    tasksController.addTaskType(req.body).then(resultFromController => res.send(resultFromController));
+})
+
+router.post("/adddepartment", (req, res) => {
+    tasksController.addDepartment(req.body).then(resultFromController => res.send(resultFromController));
+})
 
 
 module.exports = router;

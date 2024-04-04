@@ -1,13 +1,17 @@
 const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema({
-	name: {
+	taskName: {
 		type: String,
 		required: [true, "Task Name is Required"]
 	},
 	description: {
 		type: String,
 		required: [true, "Course Description is Required"]
+	},
+	destination: {
+		type: String,
+		required: [true, "Course Destination is Required"]
 	},
 	duration: {
 		type: String,

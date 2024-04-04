@@ -17,6 +17,14 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: [true, "username is Required"]
 	},
+	department: {
+		type: String,
+		required: [true, "Department is Required"]
+	},
+	role: {
+		type: String,
+		default: "Employee"
+	},
 	password: {
 		type: String,
 		required: [true, "Password is Required"]
@@ -28,13 +36,20 @@ const userSchema = new mongoose.Schema({
 	Tasks: [
 		{
 			objectId: {
-				type: String,
+				type: String
+			},
+			taskName: {
+				type: String
 			},
 			assignedId: {
 				type: String
 			},
 			assignedOn: {
 				type: String
+			},
+			active: {
+				type: Boolean,
+				default: true
 			}
 		}
 	]
