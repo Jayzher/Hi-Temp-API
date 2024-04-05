@@ -28,6 +28,9 @@ const projectSchema = new mongoose.Schema({
 		type: String,
 		default: "In Progress"
 	},
+	Remarks: {
+		type: String
+	},
 	projExpenses:{
 		type: String
 	},
@@ -36,14 +39,6 @@ const projectSchema = new mongoose.Schema({
 	},
 	subTasks: [
 		{
-			taskId: {
-				type: String,
-				required: [true, "taskId Name is Required"]
-			},
-			taskName: {
-				type: String,
-				required: [true, "Task Name is Required"]
-			},
 			description: {
 				type: String,
 				required: [true, "Course Description is Required"]
@@ -84,6 +79,10 @@ const projectSchema = new mongoose.Schema({
 			},
 			refund:{
 				type: String,
+			},
+			DateCompleted:{
+				type: Date,
+				default: new Date()
 			},
 			assignedTo: [
 				{

@@ -52,6 +52,13 @@ const userSchema = new mongoose.Schema({
 				default: true
 			}
 		}
+	],
+	Areas: [
+		{
+			address: {
+				type: String
+			}
+		}
 	]
 })
 

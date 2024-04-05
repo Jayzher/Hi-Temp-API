@@ -1,5 +1,6 @@
 const Tasks = require("../models/Tasks.js");
 const Users = require("../models/Users.js");
+const Project = require("../models/Project.js");
 const TaskTypes = require("../models/TaskTypes.js");
 
 function formatDate(date) {
@@ -17,33 +18,42 @@ function formatDate(date) {
     return month + '-' + day + '-' + year + ' ' + hours + ':' + minutes;
 }
 
-module.exports.createTask = (requestBody) => {
+// Controller to create a standalone task
+module.exports.createTask  = async (requestBody) => {
     let now = new Date();
     let formattedDate = formatDate(now);
 
-    let newTasks = new Tasks({
-        taskName: requestBody.taskName,
-        description: requestBody.description,
-        destination: requestBody.destination,
-        duration: requestBody.duration,
-        createdOn: formattedDate,
-        taskType: requestBody.taskType,
-        department: requestBody.department,
-        travelFunds: requestBody.travelFunds,
-        expenses: requestBody.expenses,
-        refund: requestBody.refund,
-        assignedTo: [{ fullName: requestBody.fullName }]
-    });
-
-    return newTasks.save()
-        .then((task) => {
-            return task; // Return the saved task if successful
-        })
-        .catch((err) => {
-            console.error("Error saving task:", err);
-            return err; // Re-throw the error to be handled by the caller
+    try {
+        // Create new task
+        let newTask = new Tasks({
+            description: requestBody.description,
+            destination: requestBody.destination,
+            duration: requestBody.duration,
+            createdOn: formattedDate,
+            taskType: requestBody.taskType,
+            department: requestBody.department,
+            travelFunds: requestBody.travelFunds,
+            expenses: requestBody.expenses,
+            refund: requestBody.refund,
+            assignedTo: [{ fullName: requestBody.fullName }]
         });
+
+        if (requestBody.projectName !== "Select Project") {
+            newTask.projectName = requestBody.projectName;
+        }
+
+
+        // Save the new task in the Task schema
+        await newTask.save();
+
+        return newTask; // Return the new task
+    } catch (err) {
+        console.error("Error creating standalone task:", err);
+        throw err; // Re-throw the error to be handled by the caller
+    }
 };
+
+
 
 getTaskId = async (id) => {
     return await Tasks.findById(id, {_id: 1}).then((result, err) => {
@@ -89,7 +99,7 @@ module.exports.assignTo = async (reqbody) => {
 
         const newTask = {
             objectId: reqbody.id,
-            taskName: task.taskName,
+            taskType: task.taskType,
             active: reqbody.active,
             assignedId: Increment
         };
@@ -117,6 +127,7 @@ module.exports.setTaskActive = async (reqbody) => {
         throw new Error('Error setting task active status');
     }
 };
+
 
 module.exports.getAll = () => {
 	return Tasks.find({}).then(result => {
@@ -158,7 +169,8 @@ module.exports.updateTask = (reqbody) => {
         assignedTo: [{
             fullName: reqbody.assignedTo
         }],
-        Status : reqbody.Status
+        Status : reqbody.Status,
+        DateCompleted: reqbody.DateCompleted
     }
 
     return Tasks.findOneAndUpdate({tasksId : reqbody.tasksId}, modifyTask).then((result, err) => {
@@ -234,5 +246,7 @@ module.exports.addDepartment = (reqbody) => {
         }
     })
 }
+
+
 
 

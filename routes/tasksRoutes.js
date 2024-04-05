@@ -20,7 +20,7 @@ router.get("/allTasks", (req, res) => {
 	tasksController.getAll().then(resultFromController => res.send(resultFromController));
 })
 
-router.post("/active", (req, res) => {
+router.patch("/active", (req, res) => {
 	tasksController.availableProducts(req.body).then(resultFromController => res.send(resultFromController));
 })
 
@@ -71,7 +71,7 @@ router.post("/assign", (req, res) => {
         });
 });
 
-router.put("/setActive", (req, res) => {
+router.put("/Active", (req, res) => {
     tasksController.setTaskActive(req.body).then(resultFromController => res.send(resultFromController));
 })
 
